@@ -1,7 +1,5 @@
 import files from "../../util/file"
 const { readdirSync, rmSync } = require('fs');
-import path from "path";
-import file from "../../util/file";
 
 describe("Check if file is being found or not", function(){
     it("checks if image is in original folder", async () => {
@@ -35,9 +33,20 @@ describe("Check Resizing Functionality and Caching", () => {
         expect(result).toEqual("Already Resized");
     });
 
+    describe("Check diffrent file types", function(){
+        it("checks jpeg format", async () => {
+            const result = await files.resizeImage("tunnel.jpeg", 600, 400);
+            expect(result).toEqual("Resized");
+        });
+        it("checks png format", async () => {
+            const result = await files.resizeImage("sun.png", 600, 400);
+            expect(result).toEqual("Resized");
+        });
+    });
+
     afterAll(() => {
 
-        const dir = files.rszImagePath
+        const dir = files.rszFilePath;
 
         readdirSync(dir).forEach((f: unknown) => rmSync(`${dir}/${f}`));
     });

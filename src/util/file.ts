@@ -2,35 +2,61 @@ import { promises as fs } from "fs";
 import path from "path";
 import sharp from 'sharp';
 
-const ogImagePath = path.resolve(__dirname, "../../images/original");
-const rszImagePath = path.resolve(__dirname, "../../images/resized");
+const ogFilePath = path.resolve(__dirname, "../../images/original");
+const rszFilePath = path.resolve(__dirname, "../../images/resized");
+
+const checkResizedFolder = async () : Promise<void> => {
+    try {
+        await fs.access(rszFilePath)
+    } catch (error) {
+        try {
+            await fs.mkdir(rszFilePath);
+        } catch (error) {
+        }
+        
+    }
+}
+
+const getOgImagePath = (fileName : string) : string => {
+    const imgPath = path.resolve(ogFilePath, fileName);
+    return imgPath;
+}
+
+const getRszImagePath = (fileName: string, width: number, height: number): [string, keyof sharp.FormatEnum, string] => {
+    const sourcePath = path.resolve(ogFilePath, fileName);
+    const index = fileName.lastIndexOf(".");
+    const name = fileName.slice(0, index);
+    const extension = fileName.slice(index);
+    const format = extension.slice(1) as keyof sharp.FormatEnum ;
+    const NewFileName = `${name}_${width}_${height}${extension}`;
+    const destinationPath = path.resolve(rszFilePath, NewFileName);
+    return [NewFileName, format, destinationPath]
+}
 
 
 const  isOgImageFound = async (fileName : string): Promise<boolean> => {
 
-    const imgPath = path.resolve(ogImagePath, fileName);
+    const imgPath = getOgImagePath(fileName);
     try {
         
         await fs.access(imgPath);
         return true;
         
     } catch (error) {
-        // console.log(error);
         return false;
 
     }
 }
 
-const  isRszImageFound = async (fileName : string) => {
+const  isRszImageFound = async (fileName : string) : Promise<boolean> => {
 
-    const imgPath = path.resolve(rszImagePath, fileName);
+    const imgPath = path.resolve(rszFilePath, fileName);
     try {
         
         await fs.access(imgPath);
         return true;
         
     } catch (error) {
-        // console.log(error);
         return false;
 
     }
@@ -40,21 +66,15 @@ const resizeImage = async (fileName: string, width: number, height: number) : Pr
     try {
         if(width <= 0 || height <= 0 || !fileName)
             return "Wrong Parameters"
-        const sourcePath = path.resolve(ogImagePath, fileName);
-        console.log(sourcePath);
-        const index = fileName.lastIndexOf(".");
-        const name = fileName.slice(0, index);
-        const extension = fileName.slice(index)
-        const NewFileName = `${name}_${width}_${height}${extension}`;
-        const found = await isRszImageFound(NewFileName);
+        const [newFileName, format, destinationPath] = getRszImagePath(fileName, width, height);
+        const found = await isRszImageFound(newFileName);
         if(found){
             return "Already Resized";
         }
-        const destinationPath = path.resolve(rszImagePath, NewFileName);
-        console.log(destinationPath);
-        await sharp(sourcePath)
+        
+        await sharp(getOgImagePath(fileName))
           .resize(width, height)
-          .toFormat('jpeg')
+          .toFormat(format)
           .toFile(destinationPath);
         return "Resized";
       } catch {
@@ -63,5 +83,6 @@ const resizeImage = async (fileName: string, width: number, height: number) : Pr
     
 }
 
-export default {isOgImageFound, isRszImageFound, resizeImage, rszImagePath};
+
+export default {isOgImageFound, isRszImageFound, resizeImage, checkResizedFolder , getOgImagePath, getRszImagePath, rszFilePath};
 
