@@ -19,7 +19,11 @@ describe("Check Resizing Functionality and Caching", () => {
     expect(result).toEqual("Resized");
   });
   it("Checks if parameters are negative", async () => {
-    const result = await imageHelpers.resizeImage("encenadaport.jpg", -600, 400);
+    const result = await imageHelpers.resizeImage(
+      "encenadaport.jpg",
+      -600,
+      400
+    );
     expect(result).toEqual("Wrong Parameters");
   });
   it("Checks if File Name is omitted", async () => {

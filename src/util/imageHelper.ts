@@ -14,6 +14,11 @@ const checkResizedFolder = async (): Promise<void> => {
     }
   }
 };
+const getOgImagePath = (fileName: string): string => {
+  const ogFilePath = path.resolve(__dirname, "../../images/original");
+  const imgPath = path.resolve(ogFilePath, fileName);
+  return imgPath;
+};
 
 const isOgImageFound = async (fileName: string): Promise<boolean> => {
   const imgPath = getOgImagePath(fileName);
@@ -36,12 +41,6 @@ const isRszImageFound = async (fileName: string): Promise<boolean> => {
   }
 };
 
-const getOgImagePath = (fileName: string): string => {
-  const ogFilePath = path.resolve(__dirname, "../../images/original");
-  const imgPath = path.resolve(ogFilePath, fileName);
-  return imgPath;
-};
-
 const getRszImagePath = (
   fileName: string,
   width: number,
@@ -56,8 +55,6 @@ const getRszImagePath = (
   const destinationPath = path.resolve(rszFilePath, NewFileName);
   return [NewFileName, format, destinationPath];
 };
-
-
 
 const resizeImage = async (
   fileName: string,
@@ -92,5 +89,5 @@ export default {
   resizeImage,
   checkResizedFolder,
   getOgImagePath,
-  getRszImagePath
+  getRszImagePath,
 };
