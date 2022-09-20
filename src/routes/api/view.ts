@@ -1,5 +1,5 @@
 import express from "express";
-import files from "../../util/file";
+import imageHelpers from "../../util/imageHelper";
 
 const view = express.Router();
 
@@ -16,7 +16,7 @@ view.get("/", async (req, res) => {
     res.status(errorStatus).send("Please Enter a file name");
     return;
   }
-  const found = await files.isOgImageFound(fileName);
+  const found = await imageHelpers.isOgImageFound(fileName);
   if (!found) {
     res
       .status(errorStatus)
@@ -25,7 +25,7 @@ view.get("/", async (req, res) => {
       );
     return;
   }
-  const imgPath = files.getOgImagePath(fileName);
+  const imgPath = imageHelpers.getOgImagePath(fileName);
   res.status(200).sendFile(imgPath);
 });
 

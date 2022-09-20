@@ -1,11 +1,11 @@
 import express from "express";
-import files from "../../util/file";
 import { readdirSync, rmSync } from "fs";
+import path from "path";
 
 const clear = express.Router();
 
 clear.get("/", (req, res) => {
-  const dir = files.rszFilePath;
+  const dir = path.resolve(__dirname, "../../../images/resized");
   readdirSync(dir).forEach((f: unknown) => rmSync(`${dir}/${f}`));
   res.status(200).send("resized folder cleared");
 });

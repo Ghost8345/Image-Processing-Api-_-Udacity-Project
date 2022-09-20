@@ -11,6 +11,7 @@ describe("Test endpoint responses for clear Route", () => {
     const response = await request.get("/api/clear");
     fs.readdir(path.resolve(__dirname, "../../../images/resized")).then(
       (files) => {
+        
         expect(files.length === 0).toBe(true);
       }
     );

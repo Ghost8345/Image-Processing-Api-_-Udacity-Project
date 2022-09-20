@@ -1,5 +1,5 @@
 import express from "express";
-import files from "../../util/file";
+import imageHelpers from "../../util/imageHelper";
 
 const resize = express.Router();
 
@@ -34,7 +34,7 @@ resize.get("/", async (req, res) => {
     return;
   }
 
-  const foundinOG = await files.isOgImageFound(fileName);
+  const foundinOG = await imageHelpers.isOgImageFound(fileName);
   if (!foundinOG) {
     res
       .status(errorStatus)
@@ -44,10 +44,10 @@ resize.get("/", async (req, res) => {
     return;
   }
 
-  const imgInfo = files.getRszImagePath(fileName, width, height);
-  const foundinRsz = await files.isRszImageFound(imgInfo[0]);
+  const imgInfo = imageHelpers.getRszImagePath(fileName, width, height);
+  const foundinRsz = await imageHelpers.isRszImageFound(imgInfo[0]);
   if (!foundinRsz) {
-    const info = await files.resizeImage(fileName, width, height);
+    const info = await imageHelpers.resizeImage(fileName, width, height);
     console.log(info);
   }
   const imgPath = imgInfo[2];

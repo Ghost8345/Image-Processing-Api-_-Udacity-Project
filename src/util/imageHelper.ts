@@ -2,10 +2,8 @@ import { promises as fs } from "fs";
 import path from "path";
 import sharp from "sharp";
 
-const ogFilePath = path.resolve(__dirname, "../../images/original");
-const rszFilePath = path.resolve(__dirname, "../../images/resized");
-
 const checkResizedFolder = async (): Promise<void> => {
+  const rszFilePath = path.resolve(__dirname, "../../images/resized");
   try {
     await fs.access(rszFilePath);
   } catch (error) {
@@ -15,25 +13,6 @@ const checkResizedFolder = async (): Promise<void> => {
       console.log(error);
     }
   }
-};
-
-const getOgImagePath = (fileName: string): string => {
-  const imgPath = path.resolve(ogFilePath, fileName);
-  return imgPath;
-};
-
-const getRszImagePath = (
-  fileName: string,
-  width: number,
-  height: number
-): [string, keyof sharp.FormatEnum, string] => {
-  const index = fileName.lastIndexOf(".");
-  const name = fileName.slice(0, index);
-  const extension = fileName.slice(index);
-  const format = extension.slice(1) as keyof sharp.FormatEnum;
-  const NewFileName = `${name}_${width}_${height}${extension}`;
-  const destinationPath = path.resolve(rszFilePath, NewFileName);
-  return [NewFileName, format, destinationPath];
 };
 
 const isOgImageFound = async (fileName: string): Promise<boolean> => {
@@ -47,6 +26,7 @@ const isOgImageFound = async (fileName: string): Promise<boolean> => {
 };
 
 const isRszImageFound = async (fileName: string): Promise<boolean> => {
+  const rszFilePath = path.resolve(__dirname, "../../images/resized");
   const imgPath = path.resolve(rszFilePath, fileName);
   try {
     await fs.access(imgPath);
@@ -55,6 +35,29 @@ const isRszImageFound = async (fileName: string): Promise<boolean> => {
     return false;
   }
 };
+
+const getOgImagePath = (fileName: string): string => {
+  const ogFilePath = path.resolve(__dirname, "../../images/original");
+  const imgPath = path.resolve(ogFilePath, fileName);
+  return imgPath;
+};
+
+const getRszImagePath = (
+  fileName: string,
+  width: number,
+  height: number
+): [string, keyof sharp.FormatEnum, string] => {
+  const rszFilePath = path.resolve(__dirname, "../../images/resized");
+  const index = fileName.lastIndexOf(".");
+  const name = fileName.slice(0, index);
+  const extension = fileName.slice(index);
+  const format = extension.slice(1) as keyof sharp.FormatEnum;
+  const NewFileName = `${name}_${width}_${height}${extension}`;
+  const destinationPath = path.resolve(rszFilePath, NewFileName);
+  return [NewFileName, format, destinationPath];
+};
+
+
 
 const resizeImage = async (
   fileName: string,
@@ -89,6 +92,5 @@ export default {
   resizeImage,
   checkResizedFolder,
   getOgImagePath,
-  getRszImagePath,
-  rszFilePath,
+  getRszImagePath
 };

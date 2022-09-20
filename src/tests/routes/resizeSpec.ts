@@ -2,7 +2,6 @@ import supertest from "supertest";
 import app from "../..";
 import sizeOf from "image-size";
 import path from "path";
-import files from "../../util/file";
 import { readdirSync, rmSync } from "fs";
 
 const request = supertest(app);
@@ -60,7 +59,7 @@ describe("Test endpoint responses for resize Route", () => {
   });
 
   afterAll(() => {
-    const dir = files.rszFilePath;
+    const dir = path.resolve(__dirname, "../../../images/resized");
 
     readdirSync(dir).forEach((f: unknown) => rmSync(`${dir}/${f}`));
   });
