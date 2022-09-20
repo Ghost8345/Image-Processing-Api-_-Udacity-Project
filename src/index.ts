@@ -12,7 +12,7 @@ app.listen(port, async (): Promise<void> => {
   console.log(`server started at localhost:${port}`);
 });
 
-app.get("/", (req, res) => {
+app.get("/", (req: express.Request, res: express.Response): void => {
   res
     .status(200)
     .send(
